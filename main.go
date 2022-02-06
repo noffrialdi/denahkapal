@@ -1,58 +1,68 @@
 package main
 
-import (
-	"fmt"
-	"log"
-)
+import "fmt"
 
-type PerahuMtr struct {
-	Nama             string
-	Kapasitasmanusia int
+type hitungMuatan interface {
+	perahuMotor() muatanPerahu
+	perahuPesiar() muatanPerahu
+	perahuLayar() muatanPerahu
 }
 
-func TmbhPerahuMotor(m *PerahuMtr) {
-	fmt.Printf("Tambah perahu di insert, nama perahu %s dan kapasitas manusia %d", m.Nama, m.Kapasitasmanusia)
+type inputKategory struct {
+	jmlahMuatan int
 }
 
-func (p PerahuMtr) TmbhPerahuMotor() {
-	fmt.Printf("Name: '%s', kapasitas manusia: %t\n", p.Nama, p.Kapasitasmanusia)
+type muatanPerahu struct {
+	perahu     string
+	keterangan string
+	muatan     int
 }
 
-type PerahuPesiar struct {
-	PerahuMtr
-	Jumlahlantai       int
-	Kapasitaskendaraan int
-}
-
-func (ps PerahuPesiar) TmbhPerahuMotor() {
-	fmt.Printf("Perahu %s, Jumlah lantai %d, jumlah kendaraan %d", ps.Nama, ps.Jumlahlantai, ps.Kapasitaskendaraan)
-}
-
-type PerahuLayar struct {
-	PerahuPesiar
-	Jumlahlayar   int
-	Jmlhpendayung int
-}
-
-func perahuLayer(layar int, dayung int) *PerahuLayar {
-	temp := &PerahuLayar{
-		PerahuPesiar{
-			PerahuMtr{"Perahu Motor", 4},
-			4,
-			6,
-		},
-		layar,
-		dayung,
+func (m muatanPerahu) hitungMuatan() int {
+	if m.perahu == "motor" {
+		return m.muatan * 1
+	} else if m.perahu == "pesiar" {
+		return m.muatan * 2
+	} else if m.perahu == "layar" {
+		return m.muatan * 3
+	} else {
+		return 0
 	}
-	return temp
+}
+
+func (i inputKategory) perahuMotor() muatanPerahu {
+	var data muatanPerahu
+	data.perahu = "motor"
+	data.keterangan = "Perahu motor"
+	data.muatan = i.jmlahMuatan
+
+	data.muatan = data.hitungMuatan()
+
+	return data
+}
+
+func (i inputKategory) perahuPesiar() muatanPerahu {
+	var data muatanPerahu
+	data.perahu = "pesiar"
+	data.keterangan = "Perahu motor"
+	data.muatan = i.jmlahMuatan
+	data.muatan = data.hitungMuatan()
+	return data
+}
+
+func (i inputKategory) perahuLayar() muatanPerahu {
+	var data muatanPerahu
+	data.perahu = "layar"
+	data.keterangan = "Perahu layar"
+	data.muatan = i.jmlahMuatan
+	data.muatan = data.hitungMuatan()
+	return data
 }
 
 func main() {
-	perahuMotor := &PerahuMtr{
-		"Perahu Motor",
-		20,
-	}
-	TmbhPerahuMotor(perahuMotor)
-	lyr2 := perahuLayer(8, 6)
-	log.Println("layar 2 ", lyr2)
+	var muatan hitungMuatan
+	muatan = inputKategory{2}
+	fmt.Println("total muatan motor ", muatan.perahuMotor())
+	fmt.Println("total muatan pesiar ", muatan.perahuPesiar())
+	fmt.Println("total muatan layar ", muatan.perahuLayar())
 }
